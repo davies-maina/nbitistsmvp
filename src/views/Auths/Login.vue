@@ -66,7 +66,7 @@
                   <label for="exampleInputEmail1">Email address</label>
                   <input
                     type="email"
-                    v-model="formData.email"
+                    v-model="email"
                     class="form-control"
                     id="exampleInputEmail1"
                     aria-describedby="emailHelp"
@@ -81,7 +81,7 @@
                   <input
                     type="password"
                     @keyup.enter="loginUser"
-                    v-model="formData.password"
+                    v-model="password"
                     class="form-control"
                     id="exampleInputPassword1"
                     placeholder="Password"
@@ -106,7 +106,7 @@
                   <label for="name">Your name</label>
                   <input
                     type="text"
-                    v-model="formData.name"
+                    v-model="name"
                     class="form-control"
                     id="name"
                     placeholder="Your nice name"
@@ -117,7 +117,7 @@
                   <label for="email">Email address</label>
                   <input
                     type="email"
-                    v-model="formData.email"
+                    v-model="email"
                     class="form-control"
                     id="email"
                     aria-describedby="emailHelp"
@@ -128,16 +128,33 @@
                   <label for="password">Password</label>
                   <input
                     type="password"
-                    v-model="formData.password"
+                    v-model="password"
+                    class="form-control"
+                    id="password"
+                    placeholder="Password"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="password">Confirm Password</label>
+                  <input
+                    type="password"
+                    v-model="confirmpassword"
                     @keyup.enter="registerUser"
                     class="form-control"
                     id="password"
                     placeholder="Password"
                   />
                 </div>
+                <div style="color:red" class="p-2" v-if="confirmpassword">
+                  {{ comparePasswords }}
+                </div>
 
                 <div class="form-group">
-                  <button class="btn btn-primary" @click="registerUser">
+                  <button
+                    class="btn btn-primary"
+                    @click="registerUser"
+                    :disabled="disabled"
+                  >
                     Signup
                   </button>
                 </div>
@@ -166,14 +183,37 @@ export default {
   name: "Login",
   data() {
     return {
-      formData: {}
+      email: "",
+      name: "",
+      password: "",
+      confirmpassword: "",
+      disabled: true
     };
   },
+  computed: {
+    comparePasswords() {
+      return this.password !== this.confirmpassword
+        ? "passwords do not match"
+        : "";
+    },
 
+    signUpFormIsValid() {
+      if (this.email && this.password && this.comparePasswords == "") {
+        this.disabled = false;
+      }
+    }
+  },
+  watch: {
+    comparePasswords() {
+      this.disabled = true;
+    }
+  },
   methods: {
     loginUser() {},
 
-    registerUser() {}
+    registerUser() {
+      console.log(this.comparePasswords);
+    }
   }
 };
 </script>
