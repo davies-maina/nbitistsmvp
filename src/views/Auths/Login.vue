@@ -181,6 +181,7 @@ import firebase from "firebase";
 /* import "vue-phone-number-input/dist/vue-phone-number-input.css"; */
 export default {
   name: "Login",
+  created() {},
   data() {
     return {
       email: "",
@@ -207,6 +208,9 @@ export default {
   },
 
   methods: {
+    reset() {
+      Object.assign(this.$data, this.$options.data.apply(this));
+    }, //reseting input
     loginUser() {
       firebase
         .auth()
