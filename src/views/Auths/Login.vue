@@ -106,7 +106,7 @@
                   <label for="name">Your name</label>
                   <input
                     type="text"
-                    v-model="name"
+                    v-model="displayName"
                     class="form-control"
                     id="name"
                     placeholder="Your nice name"
@@ -130,10 +130,12 @@
                     type="password"
                     v-model="password"
                     class="form-control"
-                    id="password"
                     placeholder="Password"
                   />
                 </div>
+                <!-- <div class="form-group">
+                  <VuePhoneNumberInput v-model="phonenumber" />
+                </div> -->
                 <div class="form-group">
                   <label for="password">Confirm Password</label>
                   <input
@@ -141,7 +143,6 @@
                     v-model="confirmpassword"
                     @keyup.enter="registerUser"
                     class="form-control"
-                    id="password"
                     placeholder="Password"
                   />
                 </div>
@@ -150,11 +151,7 @@
                 </div>
 
                 <div class="form-group">
-                  <button
-                    class="btn btn-primary"
-                    @click="registerUser"
-                    :disabled="disabled"
-                  >
+                  <button class="btn btn-primary" @click="registerUser">
                     Signup
                   </button>
                 </div>
@@ -178,18 +175,23 @@
 </template>
 
 <script>
-import db from "../../firebase/init";
+/* import db from "../../firebase/init"; */
+import firebase from "firebase";
+/* import VuePhoneNumberInput from "vue-phone-number-input"; */
+/* import "vue-phone-number-input/dist/vue-phone-number-input.css"; */
 export default {
   name: "Login",
   data() {
     return {
       email: "",
-      name: "",
+      displayName: "",
+      /* phonenumber: "", */
       password: "",
       confirmpassword: "",
-      disabled: true
+      user: {}
     };
   },
+
   computed: {
     comparePasswords() {
       return this.password !== this.confirmpassword
@@ -198,21 +200,46 @@ export default {
     },
 
     signUpFormIsValid() {
-      if (this.email && this.password && this.comparePasswords == "") {
+      if (this.email && this.password) {
         this.disabled = false;
       }
     }
   },
-  watch: {
-    comparePasswords() {
-      this.disabled = true;
-    }
-  },
+
   methods: {
-    loginUser() {},
+    loginUser() {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.email, this.password)
+        .then(user => {
+          console.log(user.user.displayName);
+          $("#exampleModalCenter").modal("hide");
+          this.$router.push("/admin");
+        })
+        .catch(error => {
+          console.log(error.message);
+        });
+    },
 
     registerUser() {
-      console.log(this.comparePasswords);
+      /*  console.log(this.comparePasswords); */
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(this.email, this.password)
+        .then(user => {
+          if (user) {
+            user.user
+              .updateProfile({
+                displayName: this.displayName
+                /* phoneNumber: this.phonenumber */
+              })
+              .then(() => {
+                this.user = user.user;
+                $("#exampleModalCenter").modal("hide");
+                this.$router.push("/admin");
+              });
+          }
+        });
     }
   }
 };

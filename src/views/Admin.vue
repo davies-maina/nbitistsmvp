@@ -26,7 +26,7 @@
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Pricing</a>
+            <a class="nav-link" @click="logout">Logout</a>
           </li>
           <li class="nav-item dropdown">
             <a
@@ -55,7 +55,19 @@
 </template>
 
 <script>
+import db from "../firebase/init";
+import firebase from "firebase";
 export default {
-  name: "Admin"
+  name: "Admin",
+  methods: {
+    logout() {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.$router.push("/");
+        });
+    }
+  }
 };
 </script>

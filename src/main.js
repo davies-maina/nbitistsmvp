@@ -4,12 +4,21 @@ import router from "./router";
 import jQuery from "jquery";
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+
 global.jQuery = jQuery;
 global.$ = jQuery;
 
 Vue.config.productionTip = false;
+/* import db from "./firebase/init"; */
+import firebase from "firebase";
 
-new Vue({
-    router,
-    render: h => h(App)
-}).$mount("#app");
+let app = null;
+firebase.auth().onAuthStateChanged(() => {
+
+    if (!app) {
+        app = new Vue({
+            router,
+            render: h => h(App)
+        }).$mount("#app");
+    }
+})
