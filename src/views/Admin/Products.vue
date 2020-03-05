@@ -74,7 +74,7 @@
 
                 <div class="form-group">
                   <label for="product_description">Product desc.</label>
-                  <!-- <vue-editor></vue-editor> -->
+                  <vue-editor v-model="product.description"></vue-editor>
                 </div>
               </div>
 
@@ -104,23 +104,34 @@
                     type="text"
                     placeholder="Product tags"
                     class="form-control"
+                    @keyup.188="addTag"
+                    v-model="tag"
                   />
 
                   <div class="d-flex">
-                    <p>
-                      <span class="badge badge-info p-1 mx-1"></span>
+                    <p v-for="(tag, index) in product.tags" :key="index">
+                      <span class="badge badge-info p-1 mx-1">{{ tag }}</span>
                     </p>
                   </div>
                 </div>
 
                 <div class="form-group">
                   <label for="product_image">Product Images</label>
-                  <input type="file" class="form-control" />
+                  <input
+                    type="file"
+                    class="form-control"
+                    accept="image/*"
+                    @change="uploadImage"
+                  />
                 </div>
 
                 <div class="form-group d-flex">
-                  <div class="mx-1">
-                    <img alt="product-images" width="70px" />
+                  <div
+                    class="mx-1"
+                    v-for="(image, index) in product.images"
+                    :key="index"
+                  >
+                    <img alt="product-images" width="70px" :src="image" />
                     <span class=""><i class="fa fa-trash del"></i></span>
                   </div>
                 </div>
@@ -161,6 +172,7 @@
 <script>
 import firebase from "firebase";
 import db from "../../firebase/init";
+import { VueEditor } from "vue2-editor";
 
 export default {
   name: "Products",
@@ -168,12 +180,20 @@ export default {
     return {
       products: [],
       product: {
-        name: ""
+        name: "",
+        description: "",
+        tags: [],
+        price: "",
+        images: []
       },
 
       editId: "",
-      editMode: false
+      editMode: false,
+      tag: ""
     };
+  },
+  components: {
+    VueEditor
   },
   firestore() {
     return {
@@ -184,7 +204,15 @@ export default {
     addNew() {
       this.editMode = false;
       this.product.name = "";
+      this.product.description = "";
       $("#product").modal("show");
+    },
+
+    addTag() {
+      let string = this.tag;
+      string = string.replace(",", "");
+      this.product.tags.push(string);
+      this.tag = "";
     },
     addProduct() {
       this.$firestore.products.add(this.product);
@@ -205,9 +233,40 @@ export default {
     },
     updateProduct() {
       this.$firestore.products.doc(this.editId).update({
-        name: this.product.name
+        name: this.product.name,
+        description: this.product.description
       });
       $("#product").modal("hide");
+    },
+
+    uploadImage(e) {
+      if (e.target.files[0]) {
+        let file = e.target.files[0];
+        /* console.log(e.target.files[0]); */
+        let user = firebase.auth().currentUser;
+        /* console.log(user.uid); */
+        let storageRef = firebase
+          .storage()
+          .ref(`productimages/${user.uid}/` + file.name);
+
+        let uploadTask = storageRef.put(file);
+
+        uploadTask.on(
+          "state_changed",
+          snapshot => {},
+          error => {
+            // Handle unsuccessful uploads
+          },
+          () => {
+            // Handle successful uploads on complete
+            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+            uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+              /* console.log("File available at", downloadURL); */
+              this.product.images.push(downloadURL);
+            });
+          }
+        );
+      }
     }
   }
 };
