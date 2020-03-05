@@ -27,7 +27,9 @@
               Edit
             </button>
 
-            <button class="btn btn-danger mx-2">Delete</button>
+            <button class="btn btn-danger mx-2" @click="deleteProd(product)">
+              Delete
+            </button>
           </td>
         </tr>
       </tbody>
@@ -168,6 +170,10 @@ export default {
     addProduct() {
       this.$firestore.products.add(this.product);
       $("#product").modal("hide");
+    },
+
+    deleteProd(id) {
+      this.$firestore.products.doc(id[".key"]).delete();
     }
   }
 };
