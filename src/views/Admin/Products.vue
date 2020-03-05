@@ -22,7 +22,7 @@
             <button
               class="btn btn-primary mx-2"
               data-toggle="modal"
-              data-target="#product"
+              @click="editProd(product)"
             >
               Edit
             </button>
@@ -46,8 +46,10 @@
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="editLabel">Edit product</h5>
-            <h5 class="modal-title" id="editLabel">Add product</h5>
+            <h5 class="modal-title" id="editLabel" v-if="editMode == true">
+              Edit product
+            </h5>
+            <h5 class="modal-title" id="editLabel" v-else>Add product</h5>
             <button
               type="button"
               class="close"
@@ -133,10 +135,22 @@
             >
               Close
             </button>
-            <button type="button" @click="addProduct" class="btn btn-primary">
+            <button
+              type="button"
+              class="btn btn-primary"
+              @click="updateProduct"
+              v-if="editMode == true"
+            >
+              Save changes
+            </button>
+            <button
+              type="button"
+              @click="addProduct"
+              class="btn btn-primary"
+              v-else
+            >
               Save Product
             </button>
-            <button type="button" class="btn btn-primary">Save changes</button>
           </div>
         </div>
       </div>
@@ -155,7 +169,10 @@ export default {
       products: [],
       product: {
         name: ""
-      }
+      },
+
+      editId: "",
+      editMode: false
     };
   },
   firestore() {
@@ -165,6 +182,8 @@ export default {
   },
   methods: {
     addNew() {
+      this.editMode = false;
+      this.product.name = "";
       $("#product").modal("show");
     },
     addProduct() {
@@ -174,6 +193,21 @@ export default {
 
     deleteProd(id) {
       this.$firestore.products.doc(id[".key"]).delete();
+    },
+
+    editProd(product) {
+      this.editMode = true;
+      $("#product").modal("show");
+      /* this.product = product.data(); */
+      this.editId = product[".key"];
+      /* console.log(product[".key"]); */
+      this.product = product;
+    },
+    updateProduct() {
+      this.$firestore.products.doc(this.editId).update({
+        name: this.product.name
+      });
+      $("#product").modal("hide");
     }
   }
 };
