@@ -132,7 +132,7 @@
                     :key="index"
                   >
                     <img alt="product-images" width="70px" :src="image" />
-                    <span class=""><i class="fa fa-trash del"></i></span>
+                    <span class="" @click="deleteImage(image, index)">x</span>
                   </div>
                 </div>
               </div>
@@ -267,7 +267,26 @@ export default {
           }
         );
       }
+    },
+
+    deleteImage(img, index) {
+      let image = firebase.storage().refFromURL(img);
+      this.product.images.splice(index, 1);
+
+      image
+        .delete()
+        .then(() => {
+          console.log("deleted");
+        })
+        .catch(() => {
+          console.log("error");
+        });
     }
   }
 };
 </script>
+<style scoped>
+.deleteimage:hover {
+  cursor: pointer;
+}
+</style>
