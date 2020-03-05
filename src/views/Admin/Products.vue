@@ -104,13 +104,19 @@
                     type="text"
                     placeholder="Product tags"
                     class="form-control"
-                    @keyup.188="addTag"
+                    @keyup.188="addTag()"
                     v-model="tag"
                   />
 
                   <div class="d-flex">
                     <p v-for="(tag, index) in product.tags" :key="index">
                       <span class="badge badge-info p-1 mx-1">{{ tag }}</span>
+                      <span
+                        @click="deleteTag(tag, index)"
+                        v-if="editMode == true"
+                        >x</span
+                      >
+                      <span @click="deleteaddTag(tag, index)" v-else>x</span>
                     </p>
                   </div>
                 </div>
@@ -204,7 +210,11 @@ export default {
     addNew() {
       this.editMode = false;
       this.product.name = "";
+      this.product.price = "";
+      this.product.images = [];
+      this.product.tags = [];
       this.product.description = "";
+      /* this.product.tags = ""; */
       $("#product").modal("show");
     },
 
@@ -234,7 +244,8 @@ export default {
     updateProduct() {
       this.$firestore.products.doc(this.editId).update({
         name: this.product.name,
-        description: this.product.description
+        description: this.product.description,
+        tags: this.product.tags
       });
       $("#product").modal("hide");
     },
@@ -281,6 +292,31 @@ export default {
         .catch(() => {
           console.log("error");
         });
+    },
+
+    deleteTag(tag, index) {
+      this.product.tags.splice(index, 1);
+      var cityRef = db.collection("products").doc(this.editId);
+
+      var removeCapital = cityRef
+        .update({
+          tags: firebase.firestore.FieldValue.delete()
+        })
+        .then(() => {
+          var washingtonRef = db.collection("products").doc(this.editId);
+
+          // Set the "capital" field of the city 'DC'
+          return washingtonRef
+            .update({
+              tags: this.product.tags
+            })
+            .then(function() {
+              console.log("Document successfully updated!");
+            });
+        });
+    },
+    deleteaddTag(index) {
+      this.product.tags.splice(index, 1);
     }
   }
 };
