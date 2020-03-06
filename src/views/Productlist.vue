@@ -16,7 +16,13 @@
           <div class="card-body">
             <h5 class="card-title">{{ product.name }}</h5>
             <p class="card-text" v-html="product.description"></p>
-            <a href="" class="btn btn-primary">Add to cart</a>
+            <p class="card-text">{{ product.price }}</p>
+            <addtocart
+              :prodName="product.name"
+              :prodPrice="product.price"
+              :prodid="product['.key']"
+              :prodImage="getFirstImage(product.images)"
+            ></addtocart>
           </div>
         </div>
       </div>
@@ -26,6 +32,7 @@
 <script>
 import db from "../firebase/init";
 import { Carousel, Slide } from "vue-carousel";
+import Addtocart from "../components/cart/Addtocart";
 export default {
   name: "productlist",
   firestore() {
@@ -38,9 +45,15 @@ export default {
       products: []
     };
   },
+  methods: {
+    getFirstImage(images) {
+      return images[0];
+    }
+  },
   components: {
     Carousel,
-    Slide
+    Slide,
+    Addtocart
   }
 };
 </script>
