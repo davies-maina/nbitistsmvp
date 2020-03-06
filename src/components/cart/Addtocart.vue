@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a href="" class="btn btn-primary">Add to cart</a>
+    <button class="btn btn-primary" @click="addToCart">Add to cart</button>
   </div>
 </template>
 
@@ -10,11 +10,19 @@ export default {
   props: ["prodName", "prodPrice", "prodid", "prodImage"],
   data() {
     return {
-      productName: this.prodName,
-      productPrice: this.prodPrice,
-      productid: this.prodid,
-      productImage: this.prodImage
+      item: {
+        productName: this.prodName,
+        productPrice: this.prodPrice,
+        productid: this.prodid,
+        productImage: this.prodImage
+      }
     };
+  },
+
+  methods: {
+    addToCart() {
+      this.$store.commit("addToCart", this.item);
+    }
   }
 };
 </script>
