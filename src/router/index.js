@@ -4,8 +4,9 @@ import Home from "../views/Home.vue";
 import Admin from "../views/Admin.vue";
 import Overview from "../views/Admin/Overview.vue";
 import Products from "../views/Admin/Products.vue";
-import db from '../firebase/init'
-import firebase from 'firebase'
+import db from "../firebase/init";
+import firebase from "firebase";
+import Profile from "../views/Admin/Profile.vue";
 
 Vue.use(VueRouter);
 
@@ -29,6 +30,12 @@ const routes = [{
                 path: "products",
                 name: "Products",
                 component: Products
+            },
+            {
+                path: "profile",
+                name: "Profile",
+                component: Profile,
+                meta: { requiresAuth: true }
             }
         ]
     },
@@ -49,17 +56,16 @@ const router = new VueRouter({
     routes
 });
 router.beforeEach((to, from, next) => {
-    const requiresAuth = to.matched.some(x => x.meta.requiresAuth)
-    const currentUser = firebase.auth().currentUser
+    const requiresAuth = to.matched.some(x => x.meta.requiresAuth);
+    const currentUser = firebase.auth().currentUser;
 
     if (requiresAuth && !currentUser) {
-        next('/')
+        next("/");
     } else if (requiresAuth && currentUser) {
-        next()
+        next();
     } else {
-
-        next()
+        next();
     }
-})
+});
 
 export default router;

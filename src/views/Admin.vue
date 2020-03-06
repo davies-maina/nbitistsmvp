@@ -26,7 +26,17 @@
             >
           </li>
           <li class="nav-item">
+            <router-link to="/admin/profile" class="nav-link"
+              >Profile</router-link
+            >
+          </li>
+          <li class="nav-item">
             <a class="nav-link" @click="logout">Logout</a>
+          </li>
+          <li class="nav-item">
+            <router-link to="/admin/products" class="nav-link"
+              >Products</router-link
+            >
           </li>
           <li class="nav-item dropdown">
             <a

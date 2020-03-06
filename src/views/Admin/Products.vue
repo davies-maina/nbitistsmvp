@@ -125,9 +125,11 @@
                   <label for="product_image">Product Images</label>
                   <input
                     type="file"
+                    id="uploadImages"
                     class="form-control"
                     accept="image/*"
                     @change="uploadImage"
+                    multiple
                   />
                 </div>
 
@@ -245,39 +247,45 @@ export default {
       this.$firestore.products.doc(this.editId).update({
         name: this.product.name,
         description: this.product.description,
-        tags: this.product.tags
+        tags: this.product.tags,
+        images: this.product.images
       });
       $("#product").modal("hide");
     },
 
     uploadImage(e) {
-      if (e.target.files[0]) {
-        let file = e.target.files[0];
-        /* console.log(e.target.files[0]); */
-        let user = firebase.auth().currentUser;
-        /* console.log(user.uid); */
-        let storageRef = firebase
-          .storage()
-          .ref(`productimages/${user.uid}/` + file.name);
+      if (e.target.files) {
+        let files = e.target.files;
+        for (let i = 0; i < files.length; i++) {
+          let file = files[i];
+          let user = firebase.auth().currentUser;
 
-        let uploadTask = storageRef.put(file);
+          let storageRef = firebase
+            .storage()
+            .ref(`productimages/${user.uid}/` + file.name);
 
-        uploadTask.on(
-          "state_changed",
-          snapshot => {},
-          error => {
-            // Handle unsuccessful uploads
-          },
-          () => {
-            // Handle successful uploads on complete
-            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-            uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-              /* console.log("File available at", downloadURL); */
-              this.product.images.push(downloadURL);
-            });
-          }
-        );
-      }
+          let uploadTask = storageRef.put(file);
+
+          uploadTask.on(
+            "state_changed",
+            snapshot => {},
+            error => {},
+            () => {
+              uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+                this.product.images.push(downloadURL);
+              });
+            }
+          );
+        }
+      } /* if (
+        e.target.files
+      ) {
+        let files = e.target.files;
+        for (let i = 0; i < files.length; i++) {
+          var file = files[i];
+          console.log(file);
+        }
+      } */
     },
 
     deleteImage(img, index) {
@@ -292,6 +300,9 @@ export default {
         .catch(() => {
           console.log("error");
         });
+      if (this.product.images.length < 1) {
+        document.getElementById("uploadImages").value = null;
+      }
     },
 
     deleteTag(tag, index) {

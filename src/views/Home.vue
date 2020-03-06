@@ -10,17 +10,20 @@
         Get started
       </button>
     </div>
+    <productlist></productlist>
     <login></login>
   </div>
 </template>
 
 <script>
 import Login from "./Auths/Login";
+import Productlist from "./Productlist";
 
 export default {
   name: "Home",
   components: {
-    Login
+    Login,
+    Productlist
   }
 };
 </script>
