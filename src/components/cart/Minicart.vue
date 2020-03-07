@@ -29,6 +29,7 @@
                 <div>
                   <h5 class="mt-0 ml-3">{{ item.productName }}</h5>
                   <p class="mt-0 ml-3">{{ item.productPrice }}</p>
+                  <p class="mt-0 ml-3">Quantitiy:{{ item.productQuantity }}</p>
                 </div>
               </div>
             </li>

@@ -16,7 +16,8 @@ export default {
         productName: this.prodName,
         productPrice: this.prodPrice,
         productid: this.prodid,
-        productImage: this.prodImage
+        productImage: this.prodImage,
+        productQuantity: 1
       }
     };
   },
