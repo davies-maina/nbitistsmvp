@@ -21,11 +21,13 @@
               class="list-group-item"
             >
               <div class="d-flex">
+                <span class="" @click="removeFromCart(item)">X</span>
                 <img
                   :src="item.productImage"
                   width="80px"
                   class="align-self-center"
                 />
+                <!-- <p v-if="ifItemsNotInCart">No items in cart</p> -->
                 <div>
                   <h5 class="mt-0 ml-3">{{ item.productName }}</h5>
                   <p class="mt-0 ml-3">{{ item.productPrice }}</p>
@@ -33,6 +35,7 @@
                 </div>
               </div>
             </li>
+
             <p class="mt-0 ml-3">Total:{{ shoppingCartTotal }}</p>
           </ol>
         </div>
@@ -55,6 +58,12 @@ export default {
   computed: {
     shoppingCartTotal() {
       return this.$store.getters.cartTotalPrice;
+    }
+  },
+
+  methods: {
+    removeFromCart(item) {
+      this.$store.dispatch("removeItemFromCart", item);
     }
   }
 };

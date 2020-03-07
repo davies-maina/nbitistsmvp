@@ -18,6 +18,12 @@ export default new Vuex.Store({
             } else {
                 state.cart.push(payload);
             }
+        },
+
+        removeProductFromCart(state, payload) {
+            state.cart = state.cart.filter(product => {
+                return product.productid !== payload.productid;
+            });
         }
     },
 
@@ -32,6 +38,12 @@ export default new Vuex.Store({
             });
 
             return total;
+        }
+    },
+
+    actions: {
+        removeItemFromCart({ commit }, payload) {
+            commit("removeProductFromCart", payload);
         }
     }
 });
