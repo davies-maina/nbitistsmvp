@@ -1,6 +1,8 @@
 <template>
   <div>
-    <button class="btn btn-primary" @click="addToCart">Add to cart</button>
+    <button class="btn btn-primary" @click="addToCart">
+      Add to cart
+    </button>
   </div>
 </template>
 
@@ -22,6 +24,7 @@ export default {
   methods: {
     addToCart() {
       this.$store.commit("addToCart", this.item);
+      $("#addtocart").modal("show");
     }
   }
 };

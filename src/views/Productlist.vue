@@ -27,12 +27,23 @@
         </div>
       </div>
     </div>
+    <div
+      class="modal fade"
+      id="addtocart"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true"
+    >
+      <minicart></minicart>
+    </div>
   </div>
 </template>
 <script>
 import db from "../firebase/init";
 import { Carousel, Slide } from "vue-carousel";
 import Addtocart from "../components/cart/Addtocart";
+import Minicart from "../components/cart/Minicart";
 export default {
   name: "productlist",
   firestore() {
@@ -53,7 +64,8 @@ export default {
   components: {
     Carousel,
     Slide,
-    Addtocart
+    Addtocart,
+    Minicart
   }
 };
 </script>
