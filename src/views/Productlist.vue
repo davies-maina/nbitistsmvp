@@ -2,6 +2,9 @@
   <div class="container">
     <h1 class="text-center p-5">Product list</h1>
     <div class="row">
+      <div class="container">
+        <button @click="showMiniCart">{{ cartItemCount }} cart</button>
+      </div>
       <div class="col-md-4" v-for="(product, index) in products" :key="index">
         <div class="card">
           <carousel :perPage="1">
@@ -59,6 +62,9 @@ export default {
   methods: {
     getFirstImage(images) {
       return images[0];
+    },
+    showMiniCart() {
+      $("#addtocart").modal("show");
     }
   },
   components: {
@@ -66,6 +72,11 @@ export default {
     Slide,
     Addtocart,
     Minicart
+  },
+  computed: {
+    cartItemCount() {
+      return this.$store.getters.cartItemsCount;
+    }
   }
 };
 </script>

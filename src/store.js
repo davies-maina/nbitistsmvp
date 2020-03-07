@@ -19,5 +19,19 @@ export default new Vuex.Store({
                 state.cart.push(payload);
             }
         }
+    },
+
+    getters: {
+        cartItemsCount(state) {
+            return state.cart.length;
+        },
+        cartTotalPrice(state) {
+            let total = 0;
+            state.cart.forEach(item => {
+                total += item.productPrice * item.productQuantity;
+            });
+
+            return total;
+        }
     }
 });

@@ -33,6 +33,7 @@
                 </div>
               </div>
             </li>
+            <p class="mt-0 ml-3">Total:{{ shoppingCartTotal }}</p>
           </ol>
         </div>
         <div class="modal-footer">
@@ -45,6 +46,19 @@
     </div>
   </div>
 </template>
+<script>
+export default {
+  name: "Minicart",
+  data() {
+    return {};
+  },
+  computed: {
+    shoppingCartTotal() {
+      return this.$store.getters.cartTotalPrice;
+    }
+  }
+};
+</script>
 
 <style scoped>
 .list-group {
