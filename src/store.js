@@ -34,6 +34,7 @@ export default new Vuex.Store({
             state.cart = state.cart.filter(product => {
                 return product.productid !== payload.productid;
             });
+            this.commit('saveData')
         }
     },
 
