@@ -43,7 +43,9 @@
           <button type="button" class="btn btn-secondary" data-dismiss="modal">
             resume shopping
           </button>
-          <button type="button" class="btn btn-primary">checkout</button>
+          <button type="button" class="btn btn-primary" @click="goCheckout">
+            checkout
+          </button>
         </div>
       </div>
     </div>
@@ -64,6 +66,10 @@ export default {
   methods: {
     removeFromCart(item) {
       this.$store.dispatch("removeItemFromCart", item);
+    },
+    goCheckout() {
+      $("#addtocart").modal("hide");
+      this.$router.push("/checkout");
     }
   }
 };
