@@ -43,6 +43,11 @@ export default {
     shoppingCartTotal() {
       return this.$store.getters.cartTotalPrice;
     }
+  },
+  methods: {
+    removeFromCart(item) {
+      this.$store.dispatch("removeItemFromCart", item);
+    }
   }
 };
 </script>
